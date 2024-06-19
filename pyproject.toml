@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "usenix-chainreactor"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+requests = "*"
+ipython = "*"
+pyyaml = "*"
+colorama = "*"
+pwntools = "*"
+pddl = "0.3.1"
+aenum = "*"
+dill = "*"
+toml = "*"
+levenshtein = "*"
+coloredlogs = "*"
+paramiko = "*"
+boto3 = "*"
+cve-bin-tool = "*"
+setuptools = "*"
+python-dotenv = "*"
+more-itertools = "*"
+matplotlib = "*"
+python-digitalocean = "*"
+google-cloud-compute = "*"
+chardet = "*"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

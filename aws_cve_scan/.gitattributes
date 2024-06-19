@@ -1,0 +1,1 @@
+artifacts/cve-bin-tool.sqlite filter=lfs diff=lfs merge=lfs -text

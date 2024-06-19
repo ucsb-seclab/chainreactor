@@ -1,0 +1,4 @@
+.env
+*.json
+# statdb default path
+statistics_db.sqlite

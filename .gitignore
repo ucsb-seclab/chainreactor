@@ -1,0 +1,11 @@
+generated_problem.pddl
+generated_problems/
+micronix-problem*
+
+# powerlifted artifacts
+new-domain-file.pddl
+new-instance-file.pddl
+output.lifted
+plan*
+
+stats.sqlite*
