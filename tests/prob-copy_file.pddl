@@ -3,6 +3,7 @@
   (:objects
     user - user
     file - file
+    group - group
     reader writer - executable
     p - process
     data - data
@@ -16,7 +17,8 @@
     (system_executable writer)
     
     (controlled_user user)
-    (file_owner file user)
+    (user_group user group)
+    (file_owner file user group)
     (file_present_at_location file src)
   )
 
