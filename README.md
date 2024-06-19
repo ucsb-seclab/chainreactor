@@ -82,24 +82,24 @@ The tests represent different scenarios within our domain. Below is an overview 
 
 | Test File | Description |
 |-----------|-------------|
-| `prob-copy_file.pddl` | Tests the ability to copy a file from a source to a destination location. |
-| `prob-upload_file.pddl` | Tests the ability to upload a file from a local to a remote location. |
-| `prob-write_to_file_group.pddl` | Tests the ability of a user within a group to write data to a file owned by another group member. |
-| `prob-escalate_shell_user_executable.pddl` | Tests privilege escalation by injecting shellcode into a sensitive script using a user binary. |
-| `prob-download_file.pddl` | Tests the ability to download a file from a remote to a local location. |
-| `prob-cve_shell_command_injection_needs_writable_dir_write_to_file.pddl` | Tests command injection vulnerability requiring writable directory permissions. |
-| `prob-read_file_suid.pddl` | Tests reading a file using an SUID executable. |
-| `prob-write_to_file.pddl` | Tests writing data to a file using a system executable. |
-| `prob-escalate_shell_via_chmod_suid.pddl` | Tests privilege escalation by making a binary SUID and spawning a shell. |
-| `prob-change_file_owner.pddl` | Tests changing the owner of a file using a system executable. |
-| `prob-escalate_shell.pddl` | Tests privilege escalation by injecting shellcode into a sensitive script using a system executable. |
-| `prob-read_file_group.pddl` | Tests reading a file using group permissions. |
-| `prob-corrupt_daemon_file.pddl` | Tests corrupting a daemon-managed file to inject a command. |
-| `prob-cve_shell_command_injection_write_to_file.pddl` | Tests command injection vulnerability to write data to a file. |
-| `prob-escalate_shell_sideload.pddl` | Tests privilege escalation by sideloading a library into a shell executable. |
-| `prob-write_to_file_suid.pddl` | Tests writing data to a sensitive file using an SUID executable. |
-| `prob-read_file.pddl` | Tests reading a file using a system executable. |
-| `prob-passwd_writable.pddl` | Tests overwriting an entry in `/etc/passwd` to gain control of another user. |
-| `prob-add_file_permission.pddl` | Tests adding a write permission to a file owned by the user. |
-| `prob-add_directory_permission.pddl` | Tests adding a write permission to a directory owned by the user. |
+| `copy_file.pddl` | Tests the ability to copy a file from a source to a destination location. |
+| `upload_file.pddl` | Tests the ability to upload a file from a local to a remote location. |
+| `write_to_file_group.pddl` | Tests the ability of a user within a group to write data to a file owned by another group member. |
+| `escalate_shell_user_executable.pddl` | Tests privilege escalation by injecting shellcode into a sensitive script using a user binary. |
+| `download_file.pddl` | Tests the ability to download a file from a remote to a local location. |
+| `cve_shell_command_injection_needs_writable_dir_write_to_file.pddl` | Tests command injection vulnerability requiring writable directory permissions. |
+| `read_file_suid.pddl` | Tests reading a file using an SUID executable. |
+| `write_to_file.pddl` | Tests writing data to a file using a system executable. |
+| `escalate_shell_via_chmod_suid.pddl` | Tests privilege escalation by making a binary SUID and spawning a shell. |
+| `change_file_owner.pddl` | Tests changing the owner of a file using a system executable. |
+| `escalate_shell.pddl` | Tests privilege escalation by injecting shellcode into a sensitive script using a system executable. |
+| `read_file_group.pddl` | Tests reading a file using group permissions. |
+| `corrupt_daemon_file.pddl` | Tests corrupting a daemon-managed file to inject a command. |
+| `cve_shell_command_injection_write_to_file.pddl` | Tests command injection vulnerability to write data to a file. |
+| `escalate_shell_sideload.pddl` | Tests privilege escalation by sideloading a library into a shell executable. |
+| `write_to_file_suid.pddl` | Tests writing data to a sensitive file using an SUID executable. |
+| `read_file.pddl` | Tests reading a file using a system executable. |
+| `passwd_writable.pddl` | Tests overwriting an entry in `/etc/passwd` to gain control of another user. |
+| `add_file_permission.pddl` | Tests adding a write permission to a file owned by the user. |
+| `add_directory_permission.pddl` | Tests adding a write permission to a directory owned by the user. |
 
