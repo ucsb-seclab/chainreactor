@@ -110,7 +110,7 @@ To perform an end-to-end scenario with a Digital Ocean instance, use the `do` co
 - `AMI_ID`: The Digital Ocean instance image to connect to.
 - `-s`: Path to an executable script to be uploaded and run on the Digital Ocean instance (optional).
 
-### Example Commands
+#### Example Commands
 
 Here are some example commands to help you get started:
 
@@ -132,15 +132,15 @@ Here are some example commands to help you get started:
 ./bfg9000.py do ubuntu-20-04-x64 -s setup_script.sh 
 ```
 
-### Logging and Statistics
+#### Logging and Statistics
 
 The script uses a logging module to log important events and errors; additionally, it maintains a SQLite database (`stats.sqlite`) to store statistics about the runs, including problem generation time and solve time.
 
-## The Fact Extractor
+### The Fact Extractor
 
 The Fact Extractor is a Python script used to extract system facts, which are later processed into PDDL problems with predicates and objects. It supports various connection methods, including reverse shell, bind shell, and SSH connections.
 
-### Usage
+#### Usage
 
 ```
 usage: facts_extractor.py [-h] -p P [-t T] -d D [-n N] [-fc] (-l | -r | -s) [-u U] [-k K]
@@ -164,8 +164,6 @@ SSH options:
   -u U                  User for SSH connection
   -k K                  Private key for SSH connection
 ```
-
-### Examples
 
 #### Reverse Shell Connection
 
@@ -193,7 +191,7 @@ facts_extractor.py -p 22 -t 192.168.1.2 -d domain.pddl -s -u username -k /path/t
 
 Replace `username` with the SSH username and `/path/to/private/key` with the path to the SSH private key file.
 
-### Advanced Options
+#### Advanced Options
 
 - **Labeling Results**: You can label the results (pickled facts and problems) using the `-n` option. This is useful for organizing multiple runs.
   
@@ -207,16 +205,32 @@ Replace `username` with the SSH username and `/path/to/private/key` with the pat
   facts_extractor.py -p 5000 -t 192.168.1.2 -d domain.pddl -r -fc
   ```
 
-### Output
+#### Output
 
 After running the Fact Extractor, you will have a set of generated problems under the directory `generated_problems/`. The problems can then be fed to any PDDL 2.1 planner for solving.
 
-### Workflow
+#### Workflow
 
 1. **Initialize the Connection**: Depending on the connection method chosen (reverse shell, bind shell, or SSH), the script will establish a connection to the target system.
 2. **Extract Facts**: The script will extract system facts, including users, groups, executables, writable files, SUID/SGID files, and vulnerabilities.
 3. **Encode Problems**: The extracted facts are encoded into PDDL problems using the specified domain file.
 4. **Save Results**: The encoded problems are saved in the `generated_problems/` directory, and the extracted facts are optionally pickled for reuse.
+
+### The Solver
+
+The `solve_problem.py` script invokes the Powerlifted planner to solve the PDDL problems.
+
+#### Usage
+
+```bash
+python solve_problem.py -p <PROBLEM_FILE> -d <DOMAIN_FILE>
+```
+
+#### Example Command
+
+```bash
+python solve_problem.py -p problem.pddl -d domain.pddl
+```
 
 ## Tests Overview
 
