@@ -1,0 +1,7 @@
+1: (assume_executable_with_cap_command_has_other_capabilities usr_bin_rsync )
+2: (derive_user_can_execute_file chainreactor_u chainreactor_g usr_bin_rsync )
+3: (derive_user_can_write_file chainreactor_u chainreactor_g etc_systemd_system_controller_service )
+4: (spawn_process chainreactor_u chainreactor_g usr_bin_rsync process )
+5: (write_data_to_file process usr_bin_rsync etc_systemd_system_controller_service shell local chainreactor_u chainreactor_g )
+6: (spawn_injected_shell_from_corrupted_daemon_file root_u etc_systemd_system_controller_service )
+; cost = 6
