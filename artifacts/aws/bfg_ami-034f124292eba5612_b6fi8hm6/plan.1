@@ -1,0 +1,7 @@
+1: (assume_executable_with_cap_command_has_other_capabilities usr_bin_nohup )
+2: (derive_user_can_execute_file ec2-user_u wheel_g usr_bin_nohup )
+3: (derive_user_can_write_file ec2-user_u ec2-user_g etc_systemd_system_nvidia-eula_service )
+4: (spawn_process ec2-user_u wheel_g usr_bin_nohup process )
+5: (write_data_to_file process usr_bin_nohup etc_systemd_system_nvidia-eula_service shell local ec2-user_u ec2-user_g )
+6: (spawn_injected_shell_from_corrupted_daemon_file root_u etc_systemd_system_nvidia-eula_service )
+; cost = 6

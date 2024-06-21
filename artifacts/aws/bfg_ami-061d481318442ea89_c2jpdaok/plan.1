@@ -1,0 +1,6 @@
+1: (derive_user_can_execute_file ec2-user_u systemd-journal_g usr_bin_xxd )
+2: (derive_user_can_write_file ec2-user_u ec2-user_g usr_lib_systemd_system_questdb_service )
+3: (spawn_process ec2-user_u systemd-journal_g usr_bin_xxd process )
+4: (write_data_to_file process usr_bin_xxd usr_lib_systemd_system_questdb_service shell local ec2-user_u ec2-user_g )
+5: (spawn_injected_shell_from_corrupted_daemon_file root_u usr_lib_systemd_system_questdb_service )
+; cost = 5

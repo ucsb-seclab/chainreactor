@@ -1,0 +1,6 @@
+1: (derive_user_can_execute_file ubuntu_u video_g usr_bin_busybox )
+2: (derive_user_can_write_file ubuntu_u ubuntu_g etc_systemd_system_meadowrun-check-spot-eviction_service )
+3: (spawn_process ubuntu_u video_g usr_bin_busybox process )
+4: (write_data_to_file process usr_bin_busybox etc_systemd_system_meadowrun-check-spot-eviction_service shell local ubuntu_u ubuntu_g )
+5: (spawn_injected_shell_from_corrupted_daemon_file root_u etc_systemd_system_meadowrun-check-spot-eviction_service )
+; cost = 5

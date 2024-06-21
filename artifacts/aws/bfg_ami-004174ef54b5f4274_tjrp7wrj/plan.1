@@ -1,0 +1,7 @@
+1: (derive_user_can_execute_file ec2-user_u docker_g usr_bin_wget )
+2: (derive_user_can_execute_file ec2-user_u docker_g opt_aws_dlami_bin_apply_instance_tag_service_sh )
+3: (derive_user_can_write_file ec2-user_u ec2-user_g opt_aws_dlami_bin_apply_instance_tag_service_sh )
+4: (spawn_process ec2-user_u docker_g usr_bin_wget process )
+5: (write_data_to_file process usr_bin_wget opt_aws_dlami_bin_apply_instance_tag_service_sh shell local ec2-user_u ec2-user_g )
+6: (spawn_injected_shell_from_executable_systematically_called_by_user ec2-user_u root_u docker_g opt_aws_dlami_bin_apply_instance_tag_service_sh process )
+; cost = 6
