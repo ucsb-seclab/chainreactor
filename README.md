@@ -43,44 +43,85 @@ This command reads the `flake.nix` file and sets up the development environment 
 
 ## Using the Fact Extractor
 
-The Fact Extractor is a Python script used to extract system facts which are later processed into PDDL problem with predicates and objects. It either expects a reverse connection to a shell or connects to a bind shell on a remote system.
-
-The Fact Extractor is included as part of the development environment setup by the `flake.nix` file. Once you've entered the development environment, you can use the Fact Extractor as follows:
+The Fact Extractor is a Python script used to extract system facts, which are later processed into PDDL problems with predicates and objects. It supports various connection methods, including reverse shell, bind shell, and SSH connections.
 
 ### Usage
 
 ```
-usage: main.py [-h] -p P [-t T] -d D (-l | -r)
+usage: facts_extractor.py [-h] -p P [-t T] -d D [-n N] [-fc] (-l | -r | -s) [-u U] [-k K]
 
 Run phases on an IP address
 
 options:
-  -h, --help  show this help message and exit
-  -p P        Port to connect or listen on (depending on -r or -l)
-  -t T        Target to connect to (to be used with -r)
-  -d D        Reference PDDL domain file
-  -l          Bind to a port - listen for reverse shell connections
-              instead of connecting to host
-  -r          Connect back to host's exposed shell
+  -h, --help            show this help message and exit
+  -p P                  Port to connect or listen on (depending on -r, -l or SSH)
+  -t T                  Target to connect to (to be used with -r or SSH)
+  -d D                  Reference PDDL domain file
+  -n N                  Label name for the results: pickled facts and problems
+  -fc                   Assume CVE are not patched
+
+connection options:
+  -l                    Bind to a port - listen for reverse shell connections instead of connecting to host
+  -r                    Connect back to host's exposed shell
+  -s                    Connect to the host via SSH
+
+SSH options:
+  -u U                  User for SSH connection
+  -k K                  Private key for SSH connection
 ```
 
 ### Examples
 
+#### Reverse Shell Connection
+
 To use the Fact Extractor to connect to a remote shell on a target host `192.168.1.2` on port `5000` with the reference PDDL domain file `domain.pddl`, you would run:
 
 ```bash
-main.py -p 5000 -t 192.168.1.2 -d domain.pddl -r
+facts_extractor.py -p 5000 -t 192.168.1.2 -d domain.pddl -r
 ```
+
+#### Bind Shell Connection
 
 To use the Fact Extractor to listen for reverse shell connections on port `5000` with the reference PDDL domain file `domain.pddl`, you would run:
 
 ```bash
-main.py -p 5000 -d domain.pddl -l
+facts_extractor.py -p 5000 -d domain.pddl -l
 ```
 
-Remember to replace the port, target IP address, and PDDL domain file with your actual values.
+#### SSH Connection
+
+To use the Fact Extractor to connect via SSH to a target host `192.168.1.2` on port `22` with the reference PDDL domain file `domain.pddl`, you would run:
+
+```bash
+facts_extractor.py -p 22 -t 192.168.1.2 -d domain.pddl -s -u username -k /path/to/private/key
+```
+
+Replace `username` with the SSH username and `/path/to/private/key` with the path to the SSH private key file.
+
+### Advanced Options
+
+- **Labeling Results**: You can label the results (pickled facts and problems) using the `-n` option. This is useful for organizing multiple runs.
+  
+  ```bash
+  facts_extractor.py -p 5000 -t 192.168.1.2 -d domain.pddl -r -n run1
+  ```
+
+- **Assume CVEs Are Not Patched**: Use the `-fc` flag to assume that all CVEs are not patched during the extraction process.
+
+  ```bash
+  facts_extractor.py -p 5000 -t 192.168.1.2 -d domain.pddl -r -fc
+  ```
+
+### Output
 
 After running the Fact Extractor, you will have a set of generated problems under the directory `generated_problems/`. The problems can then be fed to any PDDL 2.1 planner for solving.
+
+### Workflow
+
+1. **Initialize the Connection**: Depending on the connection method chosen (reverse shell, bind shell, or SSH), the script will establish a connection to the target system.
+2. **Extract Facts**: The script will extract system facts, including users, groups, executables, writable files, SUID/SGID files, and vulnerabilities.
+3. **Encode Problems**: The extracted facts are encoded into PDDL problems using the specified domain file.
+4. **Save Results**: The encoded problems are saved in the `generated_problems/` directory, and the extracted facts are optionally pickled for reuse.
 
 ## Tests Overview
 
