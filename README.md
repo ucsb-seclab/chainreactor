@@ -241,3 +241,7 @@ The tests represent different scenarios within our domain. Below is an overview 
 | `add_file_permission.pddl` | Tests adding a write permission to a file owned by the user. |
 | `add_directory_permission.pddl` | Tests adding a write permission to a directory owned by the user. |
 
+## Acknowledgments
+
+We would like to thank Augusto Blaas Corrêa for his PDDL expertise and support throughout the development of this study. This material is based on research sponsored by DARPA under agreement number N66001-22-2-4037. The U.S. Government is authorized to reproduce and distribute reprints for Governmental purposes notwithstanding any copyright notation thereon. This material is also supported by the National Science Foundation under grant no. 2229876 and is supported in part by funds provided by the National Science Foundation, by the Department of Homeland Security, and by IBM. Partial support was also provided through a gift from Cisco. The views and conclusions contained herein are those of the authors and should not be interpreted as necessarily representing the official policies or endorsements, either expressed or implied, of DARPA or the U.S. Government, or of NSF or its federal agency and industry partners.
+
