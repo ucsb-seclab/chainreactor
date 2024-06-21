@@ -82,7 +82,7 @@ Remember to replace the port, target IP address, and PDDL domain file with your 
 
 After running the Fact Extractor, you will have a set of generated problems under the directory `generated_problems/`. The problems can then be fed to any PDDL 2.1 planner for solving.
 
-### Tests Overview
+## Tests Overview
 
 This repository contains a bash script (`run_tests.sh`) that automates the execution of a series of tests defined in PDDL (Planning Domain Definition Language) files. The script runs a specified binary command on each test file in a directory and provides a summary of the test results.
 
