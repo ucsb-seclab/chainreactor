@@ -1,3 +1,16 @@
+# ChainReactor: Automated Privilege Escalation Chain Discovery via AI Planning
+
+ChainReactor is a research project that leverages AI planning to discover exploitation chains for privilege escalation on Unix systems. The project models the problem as a sequence of actions to achieve privilege escalation from initial access to a target system. This repository contains the open-source implementation of the system described in the paper "ChainReactor: Automated Privilege Escalation Chain Discovery via AI Planning."
+
+## Overview
+
+ChainReactor automates the discovery of privilege escalation chains by:
+- Extracting information about available executables, system configurations, and known vulnerabilities on the target system.
+- Encoding this data into a Planning Domain Definition Language (PDDL) problem.
+- Using a modern planner to generate chains that incorporate vulnerabilities and benign actions.
+
+The tool has been evaluated on synthetic vulnerable VMs, Amazon EC2, and Digital Ocean instances, demonstrating its capability to rediscover known exploits and identify new chains.
+
 # Using Nix for development
 
 Nix is a powerful package manager for Linux and other Unix systems that makes package management reliable and reproducible. It provides atomic upgrades and rollbacks, side-by-side installation of multiple versions of a package, multi-user package management and easy setup of build environments.
