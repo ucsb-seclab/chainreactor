@@ -39,7 +39,91 @@ Once Nix is installed, you can enter the development environment for this reposi
 nix develop
 ```
 
-This command reads the `flake.nix` file and sets up the development environment as described in that file. You are now in the development environment and can begin developing.
+This command reads the `flake.nix` file and sets up the development environment as described in that file. You are now in the development environment and can begin developing / testing / using Chain Reactor.
+
+## Running the Project with BFG9000
+
+The `bfg9000.py` script is an end-to-end script designed to automate the entire process of running the ChainReactor project. This includes spawning instances, extracting system facts, generating PDDL problems, and solving these problems. The script supports both AWS and Digital Ocean instances.
+
+### Prerequisites
+
+Before running the `bfg9000.py` script, ensure that you have the necessary modules and dependencies installed. We use `poetry` to handle the dependencies. 
+
+If you use Nix, which we strongly recommend, this is all handled automatically when entering the development environment.
+
+### Usage
+
+The `bfg9000.py` script provides several commands to handle different tasks. Below are the available commands and their options:
+
+#### Extracting Facts
+
+To extract system information from a target system, use the `extract` command:
+
+```bash
+./bfg9000.py extract -p <PORT> -d <DOMAIN_FILE> [-t <TARGET_IP>] [-n <NAME>] [-fc] [-l | -r | -s] [-u <USERNAME>] [-k <PRIVATE_KEY>]
+```
+
+- `-p`: The TCP port to connect or listen on.
+- `-d`: The path to the PDDL domain file.
+- `-t`: The IP address of the target system (optional, used with `-r` or SSH).
+- `-n`: A label or name for the results (optional).
+- `-fc`: Assume that CVEs on the target system are not patched (optional).
+- `-l`: Bind to a port and listen for reverse shell connections (optional).
+- `-r`: Connect back to the target system's exposed shell (optional).
+- `-s`: Connect to the target system via SSH (optional).
+- `-u`: Username for SSH connection (optional, required with `-s`).
+- `-k`: Path to the private key file for SSH connection (optional, required with `-s`).
+
+The `extract` command is a shortcut to the Facts Extractor - defined later in details.
+
+#### AWS Integration
+
+To perform an end-to-end scenario with an AWS AMI instance, use the `aws` command:
+
+```bash
+./bfg9000.py aws <AMI_ID> [-s <SCRIPT_PATH>] [-fc]
+```
+
+- `AMI_ID`: The Amazon Machine Image (AMI) ID of the AWS instance.
+- `-s`: Path to an executable script to be uploaded and run on the AWS instance (optional).
+- `-fc`: Use CVEs related to the binary on the AWS instance without checking if they are patched (optional).
+
+#### Digital Ocean Integration
+
+To perform an end-to-end scenario with a Digital Ocean instance, use the `do` command:
+
+```bash
+./bfg9000.py do <AMI_ID> [-s <SCRIPT_PATH>] [-fc]
+```
+
+- `AMI_ID`: The Digital Ocean instance image to connect to.
+- `-s`: Path to an executable script to be uploaded and run on the Digital Ocean instance (optional).
+
+### Example Commands
+
+Here are some example commands to help you get started:
+
+#### Extracting Facts from a Target System
+
+```bash
+./bfg9000.py extract -p 5000 -d domain.pddl -t 192.168.1.2 -r -u user -k ~/.ssh/id_rsa
+```
+
+#### Running an End-to-End Scenario on AWS
+
+```bash
+./bfg9000.py aws ami-12345678 -s setup_script.sh
+```
+
+#### Running an End-to-End Scenario on Digital Ocean
+
+```bash
+./bfg9000.py do ubuntu-20-04-x64 -s setup_script.sh 
+```
+
+### Logging and Statistics
+
+The script uses a logging module to log important events and errors; additionally, it maintains a SQLite database (`stats.sqlite`) to store statistics about the runs, including problem generation time and solve time.
 
 ## Using the Fact Extractor
 
