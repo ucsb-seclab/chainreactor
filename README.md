@@ -41,19 +41,30 @@ nix develop
 
 This command reads the `flake.nix` file and sets up the development environment as described in that file. You are now in the development environment and can begin developing / testing / using Chain Reactor.
 
-## Running the Project with BFG9000
+## Components
 
-The `bfg9000.py` script is an end-to-end script designed to automate the entire process of running the ChainReactor project. This includes spawning instances, extracting system facts, generating PDDL problems, and solving these problems. The script supports both AWS and Digital Ocean instances.
+### The BFG9000
 
-### Prerequisites
+The `bfg9000.py` script is an end-to-end script designed to automate the entire process of running the ChainReactor project. This includes spawning instances, extracting system facts via the Facts Extractor, generating PDDL problems, and solving these problems with Powerlifted. The script supports both AWS and Digital Ocean instances.
+
+#### Prerequisites
 
 Before running the `bfg9000.py` script, ensure that you have the necessary modules and dependencies installed. We use `poetry` to handle the dependencies. 
 
 If you use Nix, which we strongly recommend, this is all handled automatically when entering the development environment.
 
-### Usage
+#### Usage
 
-The `bfg9000.py` script provides several commands to handle different tasks. Below are the available commands and their options:
+The `bfg9000.py` script provides several commands to handle different tasks.
+
+```bash
+./bfg9000.py <command> [options]
+```
+
+Available commands:
+- `extract`: Extract system information from a target system.
+- `aws`: Perform an end-to-end scenario with an AWS AMI instance.
+- `do`: Perform an end-to-end scenario with a Digital Ocean instance.
 
 #### Extracting Facts
 
@@ -125,7 +136,7 @@ Here are some example commands to help you get started:
 
 The script uses a logging module to log important events and errors; additionally, it maintains a SQLite database (`stats.sqlite`) to store statistics about the runs, including problem generation time and solve time.
 
-## Using the Fact Extractor
+## The Fact Extractor
 
 The Fact Extractor is a Python script used to extract system facts, which are later processed into PDDL problems with predicates and objects. It supports various connection methods, including reverse shell, bind shell, and SSH connections.
 
