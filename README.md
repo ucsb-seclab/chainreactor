@@ -27,6 +27,56 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 
 You can verify that Nix was installed correctly by running `nix --version`.
 
+### Enabling and Configuring Flakes
+
+Flakes are an experimental feature in Nix and need to be explicitly enabled. Here's how to enable and configure flakes:
+
+### Temporary Enablement
+To enable flakes temporarily for a single command, add the following options:
+
+```bash
+--experimental-features 'nix-command flakes'
+```
+
+For example:
+
+```bash
+nix --experimental-features 'nix-command flakes' develop
+```
+
+#### Permanent Enablement
+
+To enable flakes permanently, you have several options depending on your setup:
+
+##### For NixOS
+
+Add the following to your system configuration:
+
+```nix
+nix.settings.experimental-features = [ "nix-command" "flakes" ];
+```
+
+#### For other distros using Home-Manager
+
+Add the following to your home-manager config:
+
+```nix
+nix = {
+  package = pkgs.nix;
+  settings.experimental-features = [ "nix-command" "flakes" ];
+};
+```
+
+##### For other distros without Home-Manager 
+
+Add the following to `~/.config/nix/nix.conf` or `/etc/nix/nix.conf`:
+
+```
+experimental-features = nix-command flakes
+```
+
+After making these changes, restart the Nix daemon or reboot your system for the changes to take effect.
+
 ### Entering the Development Environment
 
 Once Nix is installed, you can enter the development environment for this repository.
