@@ -74,11 +74,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1718792527,
-        "narHash": "sha256-9gKlKLIAOFruMmOmeBIx7HX/mG7Y6gs6gvcjreFpGMo=",
+        "lastModified": 1719612660,
+        "narHash": "sha256-4AO+jODP2UmW8Y4DEoold9mZ2vbpuNKRcMXb6cKN0YE=",
         "owner": "peperunas",
         "repo": "planner8",
-        "rev": "ad3054b3947418eac14a1506eacd18b5ceb49c31",
+        "rev": "2bd3bc6ca09d2b239e7699e8bb164703b6153b7d",
         "type": "github"
       },
       "original": {
