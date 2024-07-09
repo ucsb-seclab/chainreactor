@@ -17,6 +17,7 @@
 
         shellWithPkgs = packages: pkgs.mkShell {
           inherit packages;
+          buildInputs = [ pkgs.bashInteractive ];
           shellHook = ''
             poetry update && poetry shell
           '';
