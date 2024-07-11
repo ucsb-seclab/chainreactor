@@ -19,7 +19,7 @@
           inherit packages;
           buildInputs = [ pkgs.bashInteractive ];
           shellHook = ''
-            poetry update && poetry shell
+            poetry install && poetry shell
           '';
         };
 
