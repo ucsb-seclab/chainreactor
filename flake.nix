@@ -24,7 +24,7 @@
         };
 
         shell = with pkgs; shellWithPkgs [
-          poetry
+          (poetry.override { python3 = python311; })
           powerlifted
           parallel-full
           sqlite
