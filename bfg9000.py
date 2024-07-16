@@ -27,6 +27,9 @@ STAT_DB_PATH: Path = Path(SCRIPT_DIR / "stats.sqlite")
 LOGGER = Logger(__name__, stat_db_path=STAT_DB_PATH, log_to_file=True)
 
 
+def init_statdb(ami, fc):
+    STAT_DB = StatDB(STAT_DB_PATH, ami, fc)
+    
 def spawn_process(
     cmd, stream_stdout: bool = True, working_directory: Path = None
 ) -> tuple[list[str], list[str]]:
@@ -432,6 +435,8 @@ def upload_and_run_script(cls, ami: str, script: Path):
 def handle_do(args):
     ami: str = args.ami
 
+    init_statdb(ami, args.fc)
+
     # if a script is provided
     # upload to remote and execute
     if args.s:
@@ -469,6 +474,8 @@ def handle_do(args):
 
 def handle_aws(args):
     ami: str = args.ami
+
+    init_statdb(ami, args.fc)
 
     # if a script is provided
     # upload to remote and execute
@@ -512,8 +519,6 @@ def main(args):
             handle_aws(args)
         case "do":
             handle_do(args)
-        case "extract":
-            print("Extractor not handled yet")
         case _:
             print("Unknown command")
 
@@ -524,71 +529,6 @@ def parse_arguments():
 
     # Create subparsers for different commands
     subparsers = parser.add_subparsers(dest="command", required=True)
-
-    # Create the parser for the "extract" command
-    extract_parser = subparsers.add_parser(
-        "extract", help="Connect to a target system and extract system information."
-    )
-
-    # Create a subcommand group for "facts extractor"
-    extractor_group = extract_parser.add_argument_group(
-        "facts extractor", "Arguments for extracting system information"
-    )
-
-    # Add arguments to the extractor group
-    extractor_group.add_argument(
-        "-p",
-        type=int,
-        help="The TCP port to connect or listen on, depending on the connection method chosen.",
-        required=True,
-    )
-    extractor_group.add_argument(
-        "-t",
-        type=str,
-        help="The IP address of the target system to connect to. This is used with -r or SSH connection methods.",
-        required=False,
-    )
-    extractor_group.add_argument(
-        "-d",
-        type=str,
-        help="The path to the PDDL domain file. This is used by the internal library for generating PDDL problems.",
-        required=True,
-    )
-    extractor_group.add_argument(
-        "-n",
-        type=str,
-        help="A label or name for the results, which includes pickled system information and generated problems. This can be used to distinguish between different target systems.",
-        required=False,
-    )
-    extractor_group.add_argument(
-        "-fc",
-        action="store_true",
-        help="If set, the program will assume that Common Vulnerabilities and Exposures (CVE) on the target system are not patched.",
-        required=False,
-    )
-
-    # Add mutually exclusive connection methods
-    connection_group = extractor_group.add_mutually_exclusive_group(required=True)
-    connection_group.add_argument(
-        "-l",
-        action="store_true",
-        help="If set, the program will bind to a port and listen for reverse shell connections instead of connecting to a target system.",
-    )
-    connection_group.add_argument(
-        "-r",
-        action="store_true",
-        help="If set, the program will connect back to a target system's exposed shell."
-    )
-    connection_group.add_argument(
-        "-s",
-        action="store_true",
-        help="If set, the program will connect to the target system via SSH."
-    )
-
-    # Add SSH related arguments
-    ssh_group = connection_group.add_argument_group("SSH", "SSH related arguments")
-    ssh_group.add_argument("-u", type=str, help="Username for SSH connection.")
-    ssh_group.add_argument("-k", type=str, help="Path to the private key file for SSH connection.")
 
     # Create the parser for the "aws" command
     aws_parser = subparsers.add_parser(
@@ -645,8 +585,6 @@ def parse_arguments():
 
 if __name__ == "__main__":
     args = parse_arguments()
-
-    STAT_DB = StatDB(STAT_DB_PATH, args.ami, args.fc)
 
     try:
         main(args)
