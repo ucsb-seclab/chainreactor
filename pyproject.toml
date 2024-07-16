@@ -2,7 +2,7 @@
 name = "usenix-chainreactor"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Giulio De Pasquale <dev@depasquale.giugl.io>, Riccardo Iesari, Gabriel Pizarro"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
