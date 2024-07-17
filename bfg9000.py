@@ -28,6 +28,7 @@ LOGGER = Logger(__name__, stat_db_path=STAT_DB_PATH, log_to_file=True)
 
 
 def init_statdb(ami, fc):
+    global STAT_DB
     STAT_DB = StatDB(STAT_DB_PATH, ami, fc)
     
 def spawn_process(
@@ -230,8 +231,8 @@ def solve_problem(problem: Path, working_directory: Path):
     if not problem.exists():
         LOGGER.error("Problem not found. Cannot continue solving.")
 
-        if stat_db:
-            stat_db.update_run_state(statdb.runstate.problems_failed)
+        if STAT_DB:
+            STAT_DB.update_run_state(StatDB.RunState.PROBLEMS_FAILED)
 
         exit(-1)
 
