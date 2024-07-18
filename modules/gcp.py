@@ -109,6 +109,10 @@ class GCPWrapper(CloudProviderWrapper):
         return False
 
     @property
+    def ssh_private_key(self) -> str:
+        return getenv(self.ENV_KEY_PATH)
+
+    @property
     def ip_address(self) -> str:
         return self._instance.network_interfaces[0].access_configs[0].nat_i_p
 

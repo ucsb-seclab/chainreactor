@@ -75,6 +75,10 @@ class DigitalOceanWrapper(CloudProviderWrapper):
         return self._instance.status == "active"
 
     @property
+    def ssh_private_key(self) -> str:
+        return getenv(self.ENV_KEY_PATH)
+
+    @property
     def ip_address(self) -> str:
         return self._instance.ip_address
 

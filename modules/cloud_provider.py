@@ -37,6 +37,11 @@ class CloudProviderWrapper(ABC):
 
     @property
     @abstractmethod
+    def ssh_private_key(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
     def ip_address(self) -> str:
         pass
 

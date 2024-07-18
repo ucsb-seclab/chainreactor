@@ -67,7 +67,6 @@ class AWSWrapper(CloudProviderWrapper):
 
         self._ec2 = boto3.resource("ec2", region_name=self.region)
         self._client = boto3.client("ec2", region_name=self.region)
-        self.ssh_private_key = getenv(self.ENV_KEY_PATH)
         self.instance = None
 
     def _spawn_instance(self):
@@ -152,6 +151,10 @@ class AWSWrapper(CloudProviderWrapper):
     def _terminate_instance(self):
         if self.instance:
             self.instance.terminate()
+
+    @property
+    def ssh_private_key(self) -> str:
+        return getenv(self.ENV_KEY_PATH)
 
     @property
     def ip_address(self) -> str:
