@@ -18,11 +18,12 @@ from modules.aws import (
 )
 from modules.digital_ocean import DigitalOceanWrapper
 from modules.logger import Logger, StatDB
+from typing import Optional
 
 # Get the absolute path to the directory containing current script
 SCRIPT_DIR = Path(__file__).resolve().parent
 # to be set later
-STAT_DB: StatDB = None
+STAT_DB: StatDB
 STAT_DB_PATH: Path = Path(SCRIPT_DIR / "stats.sqlite")
 LOGGER = Logger(__name__, stat_db_path=STAT_DB_PATH, log_to_file=True)
 
@@ -32,7 +33,7 @@ def init_statdb(ami, fc):
     STAT_DB = StatDB(STAT_DB_PATH, ami, fc)
     
 def spawn_process(
-    cmd, stream_stdout: bool = True, working_directory: Path = None
+    cmd, stream_stdout: bool = True, working_directory: Optional[Path] = None
 ) -> tuple[list[str], list[str]]:
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, cwd=working_directory)
 

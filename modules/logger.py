@@ -6,6 +6,7 @@ import coloredlogs
 from enum import Enum
 from pathlib import Path
 from datetime import datetime
+from typing import Optional
 
 
 class StatDB:
@@ -351,7 +352,7 @@ class Logger:
     def __init__(
         self,
         name,
-        stat_db_path: Path = None,
+        stat_db_path: Optional[Path] = None,
         log_to_file: bool = False,
         log_file: str = "log.txt",
     ):

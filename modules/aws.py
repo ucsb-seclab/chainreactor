@@ -4,6 +4,7 @@ from os import getenv
 
 from .cloud_provider import CloudProviderWrapper
 from .logger import StatDB
+from typing import Optional
 
 
 class UnsupportedOperation(Exception):
@@ -49,7 +50,7 @@ class AWSWrapper(CloudProviderWrapper):
         image: str,
         region: str = DEFAULT_REGION,
         size: str = DEFAULT_INSTANCE_TYPE,
-        stat_db: StatDB = None
+        stat_db: Optional[StatDB] = None
     ):
         """
         Initializes the AWSWrapper with the provided AMI, region, instance type, and StatDB.
@@ -159,7 +160,7 @@ class AWSWrapper(CloudProviderWrapper):
 
     def connect_ssh(
         self,
-        user: str = None,
+        user: Optional[str] = None,
         ssh_key: str = getenv(ENV_KEY_PATH)
     ) -> bool:
         """

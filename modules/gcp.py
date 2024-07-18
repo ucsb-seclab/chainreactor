@@ -28,7 +28,7 @@ class GCPWrapper(CloudProviderWrapper):
             image: str,
             region: str = DEFAULT_REGION,
             size: str = DEFAULT_SIZE,
-            stat_db: StatDB = None
+            stat_db: Optional[StatDB] = None
     ):
         """
         Initializes the GCPWrapper
