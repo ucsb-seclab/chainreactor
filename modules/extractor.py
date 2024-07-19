@@ -44,47 +44,47 @@ PACKAGE_MANAGERS = ["apt", "yum", "dnf", "zypper"]
 
 class CommandEnum(Enum):
     FIND_EXECUTABLES = (
-        lambda dir: f"find {dir} -xdev -type f -executable -exec readlink -f {{}} \; 2>/dev/null"
+        lambda dir: rf"find {dir} -xdev -type f -executable -exec readlink -f {{}} \; 2>/dev/null"
     )
-    DUMP_SO_DEPS = lambda exes: f"ldd {' '.join(exes)} 2>/dev/null"
-    RESOLVE_PATHS = lambda paths: f"readlink -m {' '.join(paths)} 2>&1"
+    DUMP_SO_DEPS = lambda exes: rf"ldd {' '.join(exes)} 2>/dev/null"
+    RESOLVE_PATHS = lambda paths: rf"readlink -m {' '.join(paths)} 2>&1"
     VULN_WRITABLE_DIRECTORIES = (
-        lambda dir: f"find {dir} -xdev -type d -writable -not -user $(whoami) -exec readlink -f {{}} \; 2>/dev/null"
+        lambda dir: rf"find {dir} -xdev -type d -writable -not -user $(whoami) -exec readlink -f {{}} \; 2>/dev/null"
     )
     VULN_WRITABLE_FILES = (
-        lambda dir: f"find {dir} -xdev -type f -writable -not -user $(whoami) -exec readlink -f {{}} \; 2>/dev/null"
+        lambda dir: rf"find {dir} -xdev -type f -writable -not -user $(whoami) -exec readlink -f {{}} \; 2>/dev/null"
     )
     VULN_SETUGID_FILES = (
-        lambda dir: f"find {dir} -xdev \( -perm -4000 -o -perm -2000 \) -exec readlink -f {{}} \; 2>/dev/null"
+        lambda dir: rf"find {dir} -xdev \( -perm -4000 -o -perm -2000 \) -exec readlink -f {{}} \; 2>/dev/null"
     )
-    LIST_USERS = lambda: "cat /etc/passwd | cut -d : -f1 2>/dev/null"
-    LIST_GROUPS = lambda: "cat /etc/group 2>/dev/null"
-    READ_CRONTAB = lambda: "cat /etc/crontab 2>/dev/null"
-    STAT_FILE = lambda files: f"stat {files} -c '%F:%n:%a:%U:%G' 2>/dev/null"
-    FILE_FILE = lambda files: f"file {files} 2>/dev/null"
+    LIST_USERS = lambda: r"cat /etc/passwd | cut -d : -f1 2>/dev/null"
+    LIST_GROUPS = lambda: r"cat /etc/group 2>/dev/null"
+    READ_CRONTAB = lambda: r"cat /etc/crontab 2>/dev/null"
+    STAT_FILE = lambda files: rf"stat {files} -c '%F:%n:%a:%U:%G' 2>/dev/null"
+    FILE_FILE = lambda files: rf"file {files} 2>/dev/null"
     FIND_FILE = (
-        lambda root, files: f"find {root} -xdev -type f {files} -exec readlink -f {{}} \; 2>/dev/null"
+        lambda root, files: rf"find {root} -xdev -type f {files} -exec readlink -f {{}} \; 2>/dev/null"
     )
-    CAT_FILE = lambda file: f"cat {file}"
+    CAT_FILE = lambda file: rf"cat {file}"
     LIST_SYSTEMD_SERVICES = (
-        lambda: 'find /etc/systemd -iname "*.service" -exec readlink -f {} \; 2>/dev/null'
+        lambda: r'find /etc/systemd -iname "*.service" -exec readlink -f {} \; 2>/dev/null'
     )
 
     # CVE
     EXECUTABLE_VERSION = (
-        lambda executable, version_command: f"timeout {TIMEOUT}s {executable} {version_command}"
+        lambda executable, version_command: rf"timeout {TIMEOUT}s {executable} {version_command}"
     )
 
     # If the condition has sudo it can ask for password, timeout
-    EXECUTE_COND = lambda cmd: f"{cmd}"
+    EXECUTE_COND = lambda cmd: rf"{cmd}"
 
-    WHICH_CMD = lambda bin: f"which {bin}"
+    WHICH_CMD = lambda bin: rf"which {bin}"
 
     PM_INFO = (
-        lambda pm, bin: f"{pm} info {bin} | awk '/Version/ {{ version = $3 }} /Release/ {{ release = $3 }} END {{ printf \"%s-%s\",version,release}}'"
+        lambda pm, bin: rf"{pm} info {bin} | awk '/Version/ {{ version = $3 }} /Release/ {{ release = $3 }} END {{ printf \"%s-%s\",version,release}}'"
     )
 
-    APT_INFO = lambda bin: f"apt-cache policy {bin} | awk '/Installed:/ {{ print $2 }}'"
+    APT_INFO = lambda bin: rf"apt-cache policy {bin} | awk '/Installed:/ {{ print $2 }}'"
 
     def __call__(self, *args):
         self.value(*args)
@@ -149,8 +149,8 @@ class FactsExtractor:
         return res
 
     def __retrieve_current_user(self):
-        user_re = re.compile("uid=[0-9]+\((?P<user>[a-zA-Z0-9_-]+)\)")
-        group_re = re.compile("gid=[0-9]+\((?P<group>[a-zA-Z0-9_-]+)\)")
+        user_re = re.compile(r"uid=[0-9]+\((?P<user>[a-zA-Z0-9_-]+)\)")
+        group_re = re.compile(r"gid=[0-9]+\((?P<group>[a-zA-Z0-9_-]+)\)")
 
         output = self.connector.send_command("id").stdout[0]
 
