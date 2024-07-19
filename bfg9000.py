@@ -212,7 +212,7 @@ def solve_problem(problem: Path, working_directory: Path):
         LOGGER.error("Problem not found. Cannot continue solving.")
 
         if STAT_DB:
-            STAT_DB.update_run_state(STAT_DB.runstate.problems_failed)
+            STAT_DB.update_run_state(StatDB.RunState.PROBLEMS_FAILED)
 
         exit(-1)
 
