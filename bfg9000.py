@@ -456,11 +456,14 @@ def handle_extract(args):
 
 
 def validate_args_cloud(args):
-    if args.provider == "aws":
+    if str(args.provider).lower() == "aws":
         args.wrapper_cls = AWSWrapper
-    elif args.provider == "do":
+    elif str(args.provider).lower() == "do":
         args.wrapper_cls = DigitalOceanWrapper
-
+    else:
+        LOGGER.error("Invalid cloud provider!")
+        exit(-1)
+            
     if args.script:
         args.script = Path(args.script)
         if not args.script.exists():
