@@ -10,6 +10,7 @@ from pwnlib.tubes.listen import listen
 from pwnlib.tubes.remote import remote
 
 from .logger import Logger
+from typing import Optional
 
 class SSHException(Exception):
     """Raised when a generic SSH error is encountered"""
@@ -335,7 +336,7 @@ class SSHConnector(Connector):
     # uploads file to remote
     # if no dst is provided, the file is going to be
     # uploaded in $cwd
-    def upload_file(self, src: Path, dst: str = None) -> bool:
+    def upload_file(self, src: Path, dst: Optional[str] = None) -> bool:
         if not self.is_connected():
             return False
 
@@ -365,7 +366,7 @@ class SSHConnector(Connector):
     # uploads file to remote
     # if no dst is provided, the file is going to be
     # uploaded in $cwd
-    def download_file(self, remote: str, local: Path = None) -> bool:
+    def download_file(self, remote: str, local: Optional[Path] = None) -> bool:
         if not self.is_connected():
             return False
 

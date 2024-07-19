@@ -115,7 +115,7 @@ class CloudProviderWrapper(ABC):
 
         return self._ssh.send_command(cmd)
 
-    def upload_file(self, src: Path, dst: str = None) -> bool:
+    def upload_file(self, src: Path, dst: Optional[str] = None) -> bool:
         if not self.is_ssh_connected():
             return False
 
@@ -130,7 +130,7 @@ class CloudProviderWrapper(ABC):
 
         return True
 
-    def download_file(self, remote: str, local: Path = None) -> bool:
+    def download_file(self, remote: str, local: Optional[Path] = None) -> bool:
         if not self.is_ssh_connected():
             return False
 

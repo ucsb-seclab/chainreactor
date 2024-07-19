@@ -4,6 +4,7 @@ import digitalocean
 
 from .cloud_provider import CloudProviderWrapper
 from .logger import StatDB
+from typing import Optional
 
 
 class DigitalOceanWrapper(CloudProviderWrapper):
@@ -23,7 +24,7 @@ class DigitalOceanWrapper(CloudProviderWrapper):
             image: str,
             region: str = DEFAULT_REGION,
             size: str = DEFAULT_SIZE,
-            stat_db: StatDB = None
+            stat_db: Optional[StatDB] = None
     ):
         """
         Initializes the DigitalOceanWrapper

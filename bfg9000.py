@@ -23,6 +23,7 @@ from modules.digital_ocean import DigitalOceanWrapper
 from modules.encoder import Encoder
 from modules.extractor import FactsExtractor
 from modules.logger import Logger, StatDB
+from typing import Optional
 
 SCRIPT = Path(__file__).resolve()
 SCRIPT_DIR = SCRIPT.parent
@@ -38,7 +39,7 @@ def init_statdb(args):
 
 
 def spawn_process(
-    cmd, stream_stdout: bool = True, working_directory: Path = None
+    cmd, stream_stdout: bool = True, working_directory: Optional[Path] = None
 ) -> tuple[list[str], list[str]]:
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, cwd=working_directory)
 
