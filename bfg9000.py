@@ -207,7 +207,7 @@ def solve_problem(problem: Path, working_directory: Path):
     global STAT_DB
 
     # solver should be in the repo root
-    solver: Path = SCRIPT_DIR.parent.parent / "solve_problem.py"
+    solver: Path = SCRIPT_DIR / "solve_problem.py"
 
     if not problem.exists():
         LOGGER.error("Problem not found. Cannot continue solving.")
