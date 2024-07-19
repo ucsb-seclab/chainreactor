@@ -1,18 +1,13 @@
 #!/usr/bin/env python3
 
 import argparse
-import functools
-import operator
-import sys
 from pathlib import Path
 
 import dill
-from pddl import parse_domain
-from pddl.core import Constant, Domain, Predicate, Problem
 from pddl.formatter import problem_to_string
 
 from modules.connectors import ListenConnector, RemoteConnector, SSHConnector
-from modules.extractor import FactsContainer, FactsExtractor
+from modules.extractor import FactsExtractor
 from modules.logger import Logger
 from modules.encoder import Encoder
 
