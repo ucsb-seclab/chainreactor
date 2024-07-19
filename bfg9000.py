@@ -145,7 +145,9 @@ def extract_facts(args, working_directory: Path) -> bool:
 
             # check if the facts extractor generated the problems
             # if so, log it in the StatDB
-            if not Path(Path(working_directory) / f"generated_problems_{args.image}").exists():
+            if not Path(
+                Path(working_directory) / f"generated_problems_{args.image}"
+            ).exists():
                 LOGGER.error("Could not extract facts.")
 
                 if wrapper.stat_db:
@@ -209,6 +211,11 @@ def solve_problem(problem: Path, working_directory: Path):
     # solver should be in the repo root
     solver: Path = SCRIPT_DIR / "solve_problem.py"
 
+    if not problem.is_file():
+        LOGGER.error("Invalid problem file. Cannot continue solving.")
+
+        exit(-1)
+        
     if not problem.exists():
         LOGGER.error("Problem not found. Cannot continue solving.")
 
@@ -351,6 +358,21 @@ def add_subparser_extract(subparsers):
     )
 
 
+def add_subparser_solve(subparsers):
+    parser = subparsers.add_parser(
+        "solve",
+        help="Use the PDDL planner to solve a generated problem",
+    )
+
+    group = parser.add_argument_group("solve")
+    group.add_argument(
+        "-p",
+        "--problem",
+        type=str,
+        help="Path to the problem file to solve",
+        required=True,
+    )
+
 def add_subparser_cloud(subparsers):
     parser = subparsers.add_parser(
         "cloud",
@@ -463,7 +485,7 @@ def validate_args_cloud(args):
     else:
         LOGGER.error("Invalid cloud provider!")
         exit(-1)
-            
+
     if args.script:
         args.script = Path(args.script)
         if not args.script.exists():
@@ -514,13 +536,15 @@ def main():
     subparsers = parser.add_subparsers(dest="command", required=True)
     add_subparser_extract(subparsers)
     add_subparser_cloud(subparsers)
+    add_subparser_solve(subparsers)
 
     args = parser.parse_args()
     if args.command == "extract":
         handle_extract(args)
     elif args.command == "cloud":
         handle_cloud(args)
-
+    elif args.command == "solve":
+        solve_problem(Path(args.problem), SCRIPT_DIR)
 
 if __name__ == "__main__":
     try:
