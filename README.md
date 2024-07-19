@@ -214,7 +214,9 @@ Connection:
   -k KEY, --key KEY     SSH private key
 ```
 
-After running the Fact Extractor, you will have a set of generated problems under the directory `generated_problems/`. The problems can then be fed to any PDDL 2.1 planner for solving - or be solved via the `solve` command.
+After running the Fact Extractor, you will have a set of generated problems under the directory `generated_problems/`. The problems can then be fed to any PDDL 2.1 planner for solving - or be solved via the `solve` command. 
+
+The problem filenames reflect the goal of the escalation; in the current state, the problems are appended to the user to whom the planner will try to find an escalation path. For example, `micronix-problem-root.pddl` is the problem whose goal is to escalate to `root`.
 
 #### Local Hosts Examples
 
