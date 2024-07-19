@@ -163,9 +163,16 @@ The domain includes actions related to specific CVEs:
 
 The `bfg9000.py` script is an end-to-end script designed to automate the entire process of running the ChainReactor project. This includes spawning instances, extracting system facts via the Facts Extractor, generating PDDL problems, and solving these problems with Powerlifted. The script supports both AWS and Digital Ocean instances.
 
+This is the overview of what the BFG wraps up:
+
+1. **Initialize the Connection**: Depending on the connection method chosen (reverse shell, bind shell, or SSH), the script will establish a connection to the target system.
+2. **Extract Facts**: The script will extract system facts, including users, groups, executables, writable files, SUID/SGID files, and vulnerabilities.
+3. **Encode Problems**: The extracted facts are encoded into PDDL problems using the specified domain file.
+4. **Save Results**: The encoded problems are saved in the `generated_problems/` directory, and the extracted facts are optionally pickled for reuse.
+
 #### Prerequisites
 
-Before running the `bfg9000.py` script, ensure that you have the necessary modules and dependencies installed. We use `poetry` to handle the dependencies. 
+Before running the `bfg9000.py` script, ensure that you have the necessary modules and dependencies installed. We use `nix` and `poetry` to handle the dependencies. 
 
 If you use Nix, which we strongly recommend, this is all handled automatically when entering the development environment.
 
@@ -177,180 +184,119 @@ The `bfg9000.py` script provides several commands to handle different tasks.
 ./bfg9000.py <command> [options]
 ```
 
-Available commands:
-- `extract`: Extract system information from a target system.
-- `aws`: Perform an end-to-end scenario with an AWS AMI instance.
-- `do`: Perform an end-to-end scenario with a Digital Ocean instance.
+The BFG provides three main commands: `extract`, `cloud`, and `solve`. Each command has specific arguments and options.
 
-#### Extracting Facts
+### Extract
 
-To extract system information from a target system, use the `extract` command:
+Establish a connection with the target system, extract system information and generate PDDL problems.
 
-```bash
-./bfg9000.py extract -p <PORT> -d <DOMAIN_FILE> [-t <TARGET_IP>] [-n <NAME>] [-fc] [-l | -r | -s] [-u <USERNAME>] [-k <PRIVATE_KEY>]
-```
+```sh
+usage: bfg9000.py extract [-h] -p PORT [-t TARGET] [-n NAME] [-uc] [-l | -r | -s] [-u USER] [-k KEY]
 
-- `-p`: The TCP port to connect or listen on.
-- `-d`: The path to the PDDL domain file.
-- `-t`: The IP address of the target system (optional, used with `-r` or SSH).
-- `-n`: A label or name for the results (optional).
-- `-fc`: Assume that CVEs on the target system are not patched (optional).
-- `-l`: Bind to a port and listen for reverse shell connections (optional).
-- `-r`: Connect back to the target system's exposed shell (optional).
-- `-s`: Connect to the target system via SSH (optional).
-- `-u`: Username for SSH connection (optional, required with `-s`).
-- `-k`: Path to the private key file for SSH connection (optional, required with `-s`).
+Extract system information, generate problems, and attempt to solve from a custom connection.
 
-The `extract` command is a shortcut to the Facts Extractor - defined later in details.
-
-#### AWS Integration
-
-To perform an end-to-end scenario with an AWS AMI instance, use the `aws` command:
-
-```bash
-./bfg9000.py aws <AMI_ID> [-s <SCRIPT_PATH>] [-fc]
-```
-
-- `AMI_ID`: The Amazon Machine Image (AMI) ID of the AWS instance.
-- `-s`: Path to an executable script to be uploaded and run on the AWS instance (optional).
-- `-fc`: Use CVEs related to the binary on the AWS instance without checking if they are patched (optional).
-
-#### Digital Ocean Integration
-
-To perform an end-to-end scenario with a Digital Ocean instance, use the `do` command:
-
-```bash
-./bfg9000.py do <AMI_ID> [-s <SCRIPT_PATH>] [-fc]
-```
-
-- `AMI_ID`: The Digital Ocean instance image to connect to.
-- `-s`: Path to an executable script to be uploaded and run on the Digital Ocean instance (optional).
-
-#### Example Commands
-
-Here are some example commands to help you get started:
-
-#### Extracting Facts from a Target System
-
-```bash
-./bfg9000.py extract -p 5000 -d domain.pddl -t 192.168.1.2 -r -u user -k ~/.ssh/id_rsa
-```
-
-#### Running an End-to-End Scenario on AWS
-
-```bash
-./bfg9000.py aws ami-12345678 -s setup_script.sh
-```
-
-#### Running an End-to-End Scenario on Digital Ocean
-
-```bash
-./bfg9000.py do ubuntu-20-04-x64 -s setup_script.sh 
-```
-
-#### Logging and Statistics
-
-The script uses a logging module to log important events and errors; additionally, it maintains a SQLite database (`stats.sqlite`) to store statistics about the runs, including problem generation time and solve time.
-
-----
-
-### The Fact Extractor
-
-The Fact Extractor is a Python script used to extract system facts, which are later processed into PDDL problems with predicates and objects. It supports various connection methods, including reverse shell, bind shell, and SSH connections.
-
-#### Usage
-
-```
-usage: facts_extractor.py [-h] -p P [-t T] -d D [-n N] [-fc] (-l | -r | -s) [-u U] [-k K]
-
-Run phases on an IP address
-
-options:
+optional arguments:
   -h, --help            show this help message and exit
-  -p P                  Port to connect or listen on (depending on -r, -l or SSH)
-  -t T                  Target to connect to (to be used with -r or SSH)
-  -d D                  Reference PDDL domain file
-  -n N                  Label name for the results: pickled facts and problems
-  -fc                   Assume CVE are not patched
 
-connection options:
-  -l                    Bind to a port - listen for reverse shell connections instead of connecting to host
-  -r                    Connect back to host's exposed shell
-  -s                    Connect to the host via SSH
+Extract:
+  -p PORT, --port PORT  Port to connect or listen on (depending on -r, -l or SSH)
+  -t TARGET, --target TARGET
+                        Target to connect to (to be used with -r or SSH)
+  -n NAME, --name NAME  Filesystem name for the results (pickled facts and PDDL problems)
+  -uc, --unpatched-cves
+                        If set, assume CVEs in remote binaries are unpatched
 
-SSH options:
-  -u U                  User for SSH connection
-  -k K                  Private key for SSH connection
+Connection:
+  -l, --listen          Listen for reverse shell connection instead of connecting to host
+  -r, --reverse         Connect back to host's exposed shell
+  -s, --ssh             Connect to the host via SSH
+  -u USER, --user USER  SSH user
+  -k KEY, --key KEY     SSH private key
 ```
 
-#### Reverse Shell Connection
+After running the Fact Extractor, you will have a set of generated problems under the directory `generated_problems/`. The problems can then be fed to any PDDL 2.1 planner for solving - or be solved via the `solve` command.
 
-To use the Fact Extractor to connect to a remote shell on a target host `192.168.1.2` on port `5000` with the reference PDDL domain file `domain.pddl`, you would run:
+#### Local Hosts Examples
 
-```bash
-facts_extractor.py -p 5000 -t 192.168.1.2 -d domain.pddl -r
+1. **Extract facts via a bind shell:**
+
+    ```sh
+    ./script.py extract -p 5555 -l
+    ```
+
+In this example, the BFG is set to listen for an incoming connection on port `5555`. This is useful for scenarios where you have control over the target machine and can initiate a reverse shell connection back to the script's listening port. Once the connection is established, the script will extract system information and generate problems based on the gathered data.
+
+2. **Extract facts by connecting to a host with an open shell on port 4444:**
+
+    ```sh
+    ./script.py extract -p 4444 -r -t 192.168.1.100
+    ```
+
+In this example, the BFG will connect to a remote host at `192.168.1.100` on port `4444`, where a shell is already listening for incoming connections. This method is helpful if the remote host has a shell exposed on a specific port, allowing the script to connect, extract system information, and generate problems based on the extracted data.
+
+#### Cloud
+
+Spawn, extract system information, generate problems, and attempt to solve a cloud-provided instance.
+
+```sh
+usage: script.py cloud [-h] [-s SCRIPT] [-uc] {aws,do} image
+
+Spawn, extract system information, generate problems, and attempt to solve a cloud-provided instance.
+
+positional arguments:
+  provider              Which cloud provider to use (aws=Amazon, do=Digital Ocean)
+  image                 The provider-specific image ID to spawn
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s SCRIPT, --script SCRIPT
+                        A local script to be executed on the remote instance
+  -uc, --unpatched-cves
+                        If set, assume CVEs in remote binaries are unpatched
 ```
 
-#### Bind Shell Connection
+#### Examples
 
-To use the Fact Extractor to listen for reverse shell connections on port `5000` with the reference PDDL domain file `domain.pddl`, you would run:
+1. **Extract facts and solve problems from an AWS instance:**
 
-```bash
-facts_extractor.py -p 5000 -d domain.pddl -l
+    ```sh
+    ./script.py cloud aws ami-12345678
+    ```
+
+2. **Run a custom script on a Digital Ocean instance:**
+
+    ```sh
+    ./script.py cloud do ubuntu-20-04-x64 -s my_script.sh
+    ```
+
+### Solve
+
+Use the PDDL planner to solve a generated problem.
+
+```sh
+usage: script.py solve [-h] -p PROBLEM
+
+Use the PDDL planner to solve a generated problem.
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Solve:
+  -p PROBLEM, --problem PROBLEM
+                        Path to the problem file to solve
 ```
 
-#### SSH Connection
+#### Examples
 
-To use the Fact Extractor to connect via SSH to a target host `192.168.1.2` on port `22` with the reference PDDL domain file `domain.pddl`, you would run:
+1. **Solve a specific problem:**
 
-```bash
-facts_extractor.py -p 22 -t 192.168.1.2 -d domain.pddl -s -u username -k /path/to/private/key
+```sh
+./bfg9000.py solve -p path/to/problem.pddl
 ```
 
-Replace `username` with the SSH username and `/path/to/private/key` with the path to the SSH private key file.
+### Logging and Statistics
 
-#### Advanced Options
-
-- **Labeling Results**: You can label the results (pickled facts and problems) using the `-n` option. This is useful for organizing multiple runs.
-  
-  ```bash
-  facts_extractor.py -p 5000 -t 192.168.1.2 -d domain.pddl -r -n run1
-  ```
-
-- **Assume CVEs Are Not Patched**: Use the `-fc` flag to assume that all CVEs are not patched during the extraction process.
-
-  ```bash
-  facts_extractor.py -p 5000 -t 192.168.1.2 -d domain.pddl -r -fc
-  ```
-
-#### Output
-
-After running the Fact Extractor, you will have a set of generated problems under the directory `generated_problems/`. The problems can then be fed to any PDDL 2.1 planner for solving.
-
-#### Workflow
-
-1. **Initialize the Connection**: Depending on the connection method chosen (reverse shell, bind shell, or SSH), the script will establish a connection to the target system.
-2. **Extract Facts**: The script will extract system facts, including users, groups, executables, writable files, SUID/SGID files, and vulnerabilities.
-3. **Encode Problems**: The extracted facts are encoded into PDDL problems using the specified domain file.
-4. **Save Results**: The encoded problems are saved in the `generated_problems/` directory, and the extracted facts are optionally pickled for reuse.
-
-----
-
-### The Solver
-
-The `solve_problem.py` script invokes the Powerlifted planner to solve the PDDL problems.
-
-#### Usage
-
-```bash
-python solve_problem.py -p <PROBLEM_FILE> -d <DOMAIN_FILE>
-```
-
-#### Example Command
-
-```bash
-python solve_problem.py -p problem.pddl -d domain.pddl
-```
+The BFG uses a logging module to log essential events and errors; additionally, it maintains a SQLite database (`stats.sqlite`) to store statistics about the runs, including problem generation time and solve time.
 
 ## Tests Overview
 
@@ -403,7 +349,7 @@ To reproduce the solution, you can run the solver on the generated problems. Her
 3. Run the solver on any of the problem files using the following command:
 
 ```bash
-python solve_problem.py -p <PROBLEM_FILE> -d <DOMAIN_FILE>
+./bfg9000.py solve -p <PROBLEM_FILE>
 ```
 
 Replace `<PROBLEM_FILE>` with the path to the problem file you want to solve and `<DOMAIN_FILE>` with the path to the domain file.
