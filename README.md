@@ -190,7 +190,7 @@ The BFG provides three main commands: `extract`, `cloud`, and `solve`. Each comm
 
 Establish a connection with the target system, extract system information and generate PDDL problems.
 
-```sh
+```
 usage: bfg9000.py extract [-h] -p PORT [-t TARGET] [-n NAME] [-uc] [-l | -r | -s] [-u USER] [-k KEY]
 
 Extract system information, generate problems, and attempt to solve from a custom connection.
@@ -222,17 +222,17 @@ The problem filenames reflect the goal of the escalation; in the current state, 
 
 1. **Extract facts via a bind shell:**
 
-    ```sh
-    ./script.py extract -p 5555 -l
-    ```
+```sh
+./bfg9000.py extract -p 5555 -l
+```
 
 In this example, the BFG is set to listen for an incoming connection on port `5555`. This is useful for scenarios where you have control over the target machine and can initiate a reverse shell connection back to the script's listening port. Once the connection is established, the script will extract system information and generate problems based on the gathered data.
 
 2. **Extract facts by connecting to a host with an open shell on port 4444:**
 
-    ```sh
-    ./script.py extract -p 4444 -r -t 192.168.1.100
-    ```
+```sh
+./bfg9000.py extract -p 4444 -r -t 192.168.1.100
+```
 
 In this example, the BFG will connect to a remote host at `192.168.1.100` on port `4444`, where a shell is already listening for incoming connections. This method is helpful if the remote host has a shell exposed on a specific port, allowing the script to connect, extract system information, and generate problems based on the extracted data.
 
@@ -240,8 +240,8 @@ In this example, the BFG will connect to a remote host at `192.168.1.100` on por
 
 Spawn, extract system information, generate problems, and attempt to solve a cloud-provided instance.
 
-```sh
-usage: script.py cloud [-h] [-s SCRIPT] [-uc] {aws,do} image
+```
+usage: bfg9000.py cloud [-h] [-s SCRIPT] [-uc] {aws,do} image
 
 Spawn, extract system information, generate problems, and attempt to solve a cloud-provided instance.
 
@@ -261,22 +261,22 @@ optional arguments:
 
 1. **Extract facts and solve problems from an AWS instance:**
 
-    ```sh
-    ./script.py cloud aws ami-12345678
-    ```
+```sh
+./bfg9000.py cloud aws ami-12345678
+```
 
 2. **Run a custom script on a Digital Ocean instance:**
 
-    ```sh
-    ./script.py cloud do ubuntu-20-04-x64 -s my_script.sh
-    ```
+```sh
+./bfg9000.py cloud do ubuntu-20-04-x64 -s my_script.sh
+```
 
 ### Solve
 
 Use the PDDL planner to solve a generated problem.
 
-```sh
-usage: script.py solve [-h] -p PROBLEM
+```
+usage: bfg9000.py solve [-h] -p PROBLEM
 
 Use the PDDL planner to solve a generated problem.
 
