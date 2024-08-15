@@ -1,3 +1,10 @@
+<p align="center">
+  <img src=images/logo.png alt="Logo"/>
+</p>
+
+---
+
+
 # ChainReactor: Automated Privilege Escalation Chain Discovery via AI Planning
 
 ChainReactor is a research project that leverages AI planning to discover exploitation chains for privilege escalation on Unix systems. The project models the problem as a sequence of actions to achieve privilege escalation from initial access to a target system. This repository contains the open-source implementation of the system described in the paper "ChainReactor: Automated Privilege Escalation Chain Discovery via AI Planning."
