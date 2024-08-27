@@ -9,6 +9,8 @@
 
 ChainReactor is a research project that leverages AI planning to discover exploitation chains for privilege escalation on Unix systems. The project models the problem as a sequence of actions to achieve privilege escalation from initial access to a target system. This repository contains the open-source implementation of the system described in the paper "ChainReactor: Automated Privilege Escalation Chain Discovery via AI Planning."
 
+**We are proud to announce that ChainReactor was presented at USENIX Security 24 and received the Distinguished Artifact Award!**
+
 ## Overview
 
 ChainReactor automates the discovery of privilege escalation chains by:
@@ -17,6 +19,27 @@ ChainReactor automates the discovery of privilege escalation chains by:
 - Using a modern planner to generate chains that incorporate vulnerabilities and benign actions.
 
 The tool has been evaluated on synthetic vulnerable VMs, Amazon EC2, and Digital Ocean instances, demonstrating its capability to rediscover known exploits and identify new chains.
+
+## Citation
+
+If you use ChainReactor in your research or wish to refer to it, please use the following citation:
+
+```bibtex
+@inproceedings {depasquale_chainreactor,
+author = {Giulio De Pasquale and Ilya Grishchenko and Riccardo Iesari and Gabriel Pizarro and Lorenzo Cavallaro and Christopher Kruegel and Giovanni Vigna},
+title = {{ChainReactor}: Automated Privilege Escalation Chain Discovery via {AI} Planning},
+booktitle = {33rd USENIX Security Symposium (USENIX Security 24)},
+year = {2024},
+isbn = {978-1-939133-44-1},
+address = {Philadelphia, PA},
+pages = {5913--5929},
+url = {https://www.usenix.org/conference/usenixsecurity24/presentation/de-pasquale},
+publisher = {USENIX Association},
+month = aug
+}
+```
+
+The full paper is available at: [https://www.usenix.org/conference/usenixsecurity24/presentation/de-pasquale](https://www.usenix.org/conference/usenixsecurity24/presentation/de-pasquale)
 
 ## Using Nix for development
 
