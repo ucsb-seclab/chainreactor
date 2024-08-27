@@ -1,0 +1,403 @@
+name: "Basic Operations"
+on: push
+
+jobs:
+  DownloadFile:
+    runs-on: nix
+    name: "Download File"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+      
+      - name: Solve download_file
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-download_file.pddl && find . -iname "plan.*" -exec cat {} \;
+
+  AddFilePermission:
+    runs-on: nix
+    name: "Add file permission"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve add_file_permission
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-add_file_permission.pddl  && find . -iname "plan.*" -exec cat {} \;
+  
+  AddDirectoryPermission:
+    runs-on: nix
+    name: "Add directory permission"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve add_directory_permission
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-add_directory_permission.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  SuidFileRead:
+    runs-on: nix
+    name: "SUID file read"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve file_read_suid
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-read_file_suid.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  SuidFileWrite:
+    runs-on: nix
+    name: "SUID file write"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve write_to_file_suid
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-write_to_file_suid.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  ReadFile:
+    runs-on: nix
+    name: "Read file"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve read_file
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-read_file.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  ReadFileGroup:
+    runs-on: nix
+    name: "Read file from group"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve read_file_group
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-read_file_group.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  WriteFile:
+    runs-on: nix
+    name: "Write to file"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve write_to_file
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-write_to_file.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  WriteFileGroup:
+    runs-on: nix
+    name: "Write to file from group"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve write_to_file_group
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-write_to_file_group.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  UploadFile:
+    runs-on: nix
+    name: "Upload file"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve upload_file
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-upload_file.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  EscalateShell:
+    runs-on: nix
+    name: "Escalate shell"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve escalate_shell
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-escalate_shell.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  EscalateShellUser:
+    runs-on: nix
+    name: "Escalate shell via user executable"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve escalate_shell_user_executable
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-escalate_shell_user_executable.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  EscalateShellUserChmod:
+    runs-on: nix
+    name: "Escalate shell via SUID chmod"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-escalate_shell_via_chmod_suid.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  EscalateShellSideloading:
+    runs-on: nix
+    name: "Escalate shell via file sideloading"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-escalate_shell_sideload.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  EscalateShellSideloadingUserSpecific:
+    runs-on: nix
+    name: "Escalate shell via file sideloading through user-specific corrupted files"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-escalate_shell_user_specific_sideload.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  ChangeFileOwner:
+    runs-on: nix
+    name: "Change the file owner"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+      
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-change_file_owner.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  EditEtcPasswd:
+    runs-on: nix
+    name: "Edit /etc/passwd and gain root"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: ucsb-seclab/harden-chainreactor
+          ref: main
+          lfs: false
+
+      - name: Setup Harden cache
+        uses: cachix/cachix-action@v12
+        with:
+          name: harden
+          authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+      - name: Solve
+        run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-passwd_writable.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  CVEShellCommandInjectionWriteToFile:
+      runs-on: nix
+      name: "CVE shell command injection write to file"
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+          with:
+            repository: ucsb-seclab/harden-chainreactor
+            ref: main
+            lfs: false
+      
+        - name: Setup Harden cache
+          uses: cachix/cachix-action@v12
+          with:
+            name: harden
+            authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+        - name: Solve cve_shell_command_injection_write_to_file
+          run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-cve_shell_command_injection_write_to_file.pddl  && find . -iname "plan.*" -exec cat {} \;
+  
+  CorruptDaemonFile:
+      runs-on: nix
+      name: "Corrupt daemon file to escalate privileges"
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+          with:
+            repository: ucsb-seclab/harden-chainreactor
+            ref: main
+            lfs: false
+      
+        - name: Setup Harden cache
+          uses: cachix/cachix-action@v12
+          with:
+            name: harden
+            authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+        - name: Solve corrupt_daemon_file
+          run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-corrupt_daemon_file.pddl  && find . -iname "plan.*" -exec cat {} \;
+
+  CVEShellCommandInjectionWriteToFileNeedsWritableDir:
+      runs-on: nix
+      name: "CVE shell command injection write to file"
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+          with:
+            repository: ucsb-seclab/harden-chainreactor
+            ref: main
+            lfs: false
+      
+        - name: Setup Harden cache
+          uses: cachix/cachix-action@v12
+          with:
+            name: harden
+            authToken: '${{ secrets.CACHIX_AUTHTOKEN }}'
+
+        - name: Solve cve_shell_command_injection_needs_writable_dir
+          run: nix develop -c ./bfg9000.py solve -d scenarios/micronix/domain.pddl -p scenarios/micronix/tests/prob-cve_shell_command_injection_needs_writable_dir_write_to_file.pddl  && find . -iname "plan.*" -exec cat {} \;
