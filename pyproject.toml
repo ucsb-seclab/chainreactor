@@ -28,6 +28,10 @@ matplotlib = "*"
 python-digitalocean = "*"
 google-cloud-compute = "*"
 chardet = "*"
+azure-identity = "^1.17.1"
+azure-mgmt-network = "^26.0.0"
+azure-mgmt-compute = "^33.0.0"
+azure-mgmt-resource = "^23.1.1"
 
 
 [build-system]
