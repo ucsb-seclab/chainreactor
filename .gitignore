@@ -1,5 +1,6 @@
 .idea/
 
+.env
 recap.txt
 tests_recap.txt
 generated_problem.pddl

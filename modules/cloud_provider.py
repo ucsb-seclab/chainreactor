@@ -84,7 +84,12 @@ class CloudProviderWrapper(ABC):
     def _build_name(self) -> str:
         # GCP has a max name length of ~60 chars
         truncated_image = self.image if len(self.image) <= 35 else self.image[-35:]
-        truncated_image = truncated_image.replace("/", "-")
+        truncated_image = (
+            truncated_image
+            .replace("/", "-")
+            .replace(":", "-")
+            .replace("_", "-")
+        )
         return f"chainreactor-{int(time.time())}-{truncated_image}"
 
     def is_ssh_connected(self) -> bool:

@@ -3,18 +3,26 @@ from typing import Optional
 
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.compute import ComputeManagementClient
-from azure.mgmt.compute.v2024_07_01.models import *
+from azure.mgmt.compute.v2024_03_01.models import NetworkInterfaceReference
+from azure.mgmt.compute.v2024_07_01.models import (
+    VirtualMachine, StorageProfile, ImageReference, HardwareProfile, VirtualMachineSizeTypes, OSProfile,
+    LinuxConfiguration, SshConfiguration, SshPublicKey, NetworkProfile, InstanceViewTypes
+)
 from azure.mgmt.network import NetworkManagementClient
-from azure.mgmt.network.models import *
+from azure.mgmt.network.models import (
+    PublicIPAddress, NetworkInterfaceIPConfiguration, IPAllocationMethod, AddressSpace, VirtualNetwork, Subnet,
+    PublicIPAddressSku, PublicIPAddressSkuName, IPVersion, NetworkInterface, NetworkSecurityGroup, SecurityRule,
+    SecurityRuleAccess, SecurityRuleDirection, SecurityRuleProtocol
+)
 from azure.mgmt.resource import ResourceManagementClient
-from azure.mgmt.resource.resources.v2022_09_01.models import *
+from azure.mgmt.resource.resources.v2022_09_01.models import ResourceGroup
 
 from .cloud_provider import CloudProviderWrapper
 from .logger import StatDB
 
 
 class AzureWrapper(CloudProviderWrapper):
-    DEFAULT_LOCATION = "westus"
+    DEFAULT_LOCATION = "westus2"
     DEFAULT_SIZE = "Standard_A1_v2"
     DEFAULT_USER = "chainreactor"
 
@@ -30,7 +38,15 @@ class AzureWrapper(CloudProviderWrapper):
             stat_db: Optional[StatDB] = None
     ):
         """
-        Initializes the AzureWrapper. Authenticate using the CLI (`az login`) first
+        Initializes the AzureWrapper.
+
+        First set up with:
+            az login
+            az provider register --namespace Microsoft.Network
+            az provider register --namespace Microsoft.Compute
+
+        Delete all resource groups with:
+            az group list | jq -r '.[] | .name | select(contains("chainreactor"))' | xargs -I {} az group delete --name {} --no-wait --yes
 
         Aself.rgs:
             image: The image URN to use. Select one from azure_images.txt/update_images.sh
@@ -52,7 +68,6 @@ class AzureWrapper(CloudProviderWrapper):
 
         self._rg: Optional[ResourceGroup] = None
         self._ip_address: Optional[PublicIPAddress] = None
-        self._vm: Optional[VirtualMachine] = None
 
     def _spawn_instance(self):
         self._rg: ResourceGroup = self._resource_client.resource_groups.create_or_update(
@@ -84,6 +99,26 @@ class AzureWrapper(CloudProviderWrapper):
                 public_ip_address_version=IPVersion.I_PV4
             )
         ).result()
+        nsg: NetworkSecurityGroup = self._network_client.network_security_groups.begin_create_or_update(
+            self._rg.name,
+            "chainreactor-nsg",
+            NetworkSecurityGroup(
+                location=self.region,
+                security_rules=[
+                    SecurityRule(
+                        name="Allow-SSH",
+                        access=SecurityRuleAccess.ALLOW,
+                        direction=SecurityRuleDirection.INBOUND,
+                        priority=1000,
+                        protocol=SecurityRuleProtocol.TCP,
+                        source_port_range="*",
+                        destination_port_range="22",
+                        source_address_prefix="*",
+                        destination_address_prefix="*"
+                    )
+                ]
+            )
+        ).result()
         nic: NetworkInterface = self._network_client.network_interfaces.begin_create_or_update(
             self._rg.name,
             "chainreactor-nic",
@@ -95,16 +130,17 @@ class AzureWrapper(CloudProviderWrapper):
                         subnet=subnet,
                         public_ip_address=self._ip_address
                     )
-                ]
+                ],
+                network_security_group=nsg
             )
         ).result()
 
         image_urn = self.image.split(":")
         with open(getenv(self.ENV_PUB_KEY_PATH)) as f:
             pubkey = f.read()
-        self._vm: VirtualMachine = self._compute_client.virtual_machines.begin_create_or_update(
+        self._compute_client.virtual_machines.begin_create_or_update(
             self._rg.name,
-            self._build_name(),
+            self._rg.name,
             VirtualMachine(
                 location=self.region,
                 storage_profile=StorageProfile(
@@ -117,30 +153,32 @@ class AzureWrapper(CloudProviderWrapper):
                 ),
                 hardware_profile=HardwareProfile(vm_size=VirtualMachineSizeTypes.STANDARD_DS1_V2),
                 os_profile=OSProfile(
+                    computer_name=self._rg.name,
                     admin_username=self.DEFAULT_USER,
                     linux_configuration=LinuxConfiguration(
                         disable_password_authentication=True,
-                        ssh=SshConfiguration(public_keys=[SshPublicKey(key_data=pubkey)])
+                        ssh=SshConfiguration(public_keys=[
+                            SshPublicKey(path=f"/home/{self.DEFAULT_USER}/.ssh/authorized_keys", key_data=pubkey)
+                        ])
                     )
                 ),
-                network_profile=NetworkProfile(network_interfaces=[nic])
+                network_profile=NetworkProfile(network_interfaces=[
+                    NetworkInterfaceReference(id=nic.id)
+                ])
             )
-        ).result()
+        )
 
     def _terminate_instance(self):
         if self._rg:
             self._resource_client.resource_groups.begin_delete(self._rg.name).wait()
+            self._rg = None
+            self._ip_address = None
 
     def is_instance_up(self) -> bool:
-        if self._vm:
-            self._vm: VirtualMachine = self._compute_client.virtual_machines.get(
-                self._rg.name,
-                self._vm.name
-            )
-            for status in self._vm.instance_view.statuses:
-                if status.code == "PowerState" and status.display_status == "VM running":
-                    return True
-        return False
+        if not self._rg:
+            return False
+        instance_view = self._compute_client.virtual_machines.instance_view(self._rg.name, self._rg.name)
+        return any(status.code == "PowerState/running" for status in instance_view.statuses)
 
     @property
     def ssh_private_key(self) -> str:
