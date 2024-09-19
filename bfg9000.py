@@ -18,6 +18,7 @@ from modules.aws import (
     RequestLimitExceeded,
     UnsupportedOperation,
 )
+from modules.azure import AzureWrapper
 from modules.connectors import ListenConnector, RemoteConnector, SSHConnector
 from modules.digital_ocean import DigitalOceanWrapper
 from modules.encoder import Encoder
@@ -382,7 +383,7 @@ def add_subparser_cloud(subparsers):
     group = parser.add_argument_group("cloud")
     group.add_argument(
         "provider",
-        choices=["aws", "do"],
+        choices=["aws", "az", "do"],
         help="Which cloud provider to use (aws=Amazon, do=Digital Ocean)",
     )
     group.add_argument(
@@ -480,6 +481,8 @@ def handle_extract(args):
 def validate_args_cloud(args):
     if str(args.provider).lower() == "aws":
         args.wrapper_cls = AWSWrapper
+    elif str(args.provider).lower() == "az":
+        args.wrapper_cls = AzureWrapper
     elif str(args.provider).lower() == "do":
         args.wrapper_cls = DigitalOceanWrapper
     else:

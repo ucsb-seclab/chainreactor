@@ -95,7 +95,7 @@ class AzureWrapper(CloudProviderWrapper):
             PublicIPAddress(
                 location=self.region,
                 sku=PublicIPAddressSku(name=PublicIPAddressSkuName.STANDARD),
-                public_ip_allocation_method=IPAllocationMethod.STATIC,
+                public_ip_allocation_method=IPAllocationMethod.DYNAMIC,
                 public_ip_address_version=IPVersion.I_PV4
             )
         ).result()
