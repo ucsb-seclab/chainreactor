@@ -6,7 +6,7 @@ from azure.mgmt.compute import ComputeManagementClient
 from azure.mgmt.compute.v2024_03_01.models import NetworkInterfaceReference
 from azure.mgmt.compute.v2024_07_01.models import (
     VirtualMachine, StorageProfile, ImageReference, HardwareProfile, VirtualMachineSizeTypes, OSProfile,
-    LinuxConfiguration, SshConfiguration, SshPublicKey, NetworkProfile, InstanceViewTypes
+    LinuxConfiguration, SshConfiguration, SshPublicKey, NetworkProfile
 )
 from azure.mgmt.network import NetworkManagementClient
 from azure.mgmt.network.models import (
@@ -95,7 +95,7 @@ class AzureWrapper(CloudProviderWrapper):
             PublicIPAddress(
                 location=self.region,
                 sku=PublicIPAddressSku(name=PublicIPAddressSkuName.STANDARD),
-                public_ip_allocation_method=IPAllocationMethod.DYNAMIC,
+                public_ip_allocation_method=IPAllocationMethod.STATIC,
                 public_ip_address_version=IPVersion.I_PV4
             )
         ).result()
@@ -113,7 +113,7 @@ class AzureWrapper(CloudProviderWrapper):
                         protocol=SecurityRuleProtocol.TCP,
                         source_port_range="*",
                         destination_port_range="22",
-                        source_address_prefix="*",
+                        source_address_prefix="169.231.0.0/16", # UCSB Wireless
                         destination_address_prefix="*"
                     )
                 ]
@@ -170,7 +170,7 @@ class AzureWrapper(CloudProviderWrapper):
 
     def _terminate_instance(self):
         if self._rg:
-            self._resource_client.resource_groups.begin_delete(self._rg.name).wait()
+            self._resource_client.resource_groups.begin_delete(self._rg.name)
             self._rg = None
             self._ip_address = None
 

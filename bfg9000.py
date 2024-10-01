@@ -64,6 +64,8 @@ def spawn_process(
 def extract_facts(args, working_directory: Path) -> bool:
     if args.provider == "aws":
         default_ssh_users = ["ec2-user", "bitnami", "ubuntu", "admin"]
+    elif args.provider == "az":
+        default_ssh_users = [AzureWrapper.DEFAULT_USER]
     elif args.provider == "do":
         default_ssh_users = [DigitalOceanWrapper.DEFAULT_USER]
 
@@ -127,7 +129,8 @@ def extract_facts(args, working_directory: Path) -> bool:
                 wrapper.ip_address,
                 "--name",
                 args.image,
-                "--ssh" "--user",
+                "--ssh",
+                "--user",
                 ssh_user,
                 "--key",
                 wrapper.ssh_private_key,

@@ -68,6 +68,7 @@ class CloudProviderWrapper(ABC):
             time.sleep(1)
 
         self._logger.info(f"Instance up and running at: {self.ip_address}")
+        time.sleep(30) # Todo wait for ssh azure please remove me later
 
     @staticmethod
     def _check_env_vars(env_vars: list[str]):
