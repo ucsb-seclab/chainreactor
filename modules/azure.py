@@ -126,6 +126,17 @@ class AzureWrapper(CloudProviderWrapper):
                         destination_port_range="22",
                         source_address_prefix="128.11.0.0/16",
                         destination_address_prefix="*"
+                    ),
+                    SecurityRule(
+                        name="Allow-SSH-UCSB-Seclab",
+                        access=SecurityRuleAccess.ALLOW,
+                        direction=SecurityRuleDirection.INBOUND,
+                        priority=1000,
+                        protocol=SecurityRuleProtocol.TCP,
+                        source_port_range="*",
+                        destination_port_range="22",
+                        source_address_prefix="128.111.0.0/16",
+                        destination_address_prefix="*"
                     )
                 ]
             )
