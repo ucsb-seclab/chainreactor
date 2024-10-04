@@ -170,7 +170,7 @@ class AzureWrapper(CloudProviderWrapper):
 
     def _terminate_instance(self):
         if self._rg:
-            self._resource_client.resource_groups.begin_delete(self._rg.name)
+            self._resource_client.resource_groups.begin_delete(self._rg.name).wait()
             self._rg = None
             self._ip_address = None
 
