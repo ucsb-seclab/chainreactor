@@ -13,6 +13,6 @@ new-instance-file.pddl
 output.lifted
 plan*
 
-stats.sqlite*
+stats.*sqlite*
 result
 log.txt

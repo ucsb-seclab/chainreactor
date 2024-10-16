@@ -114,9 +114,9 @@ class AzureWrapper(CloudProviderWrapper):
                         source_port_range="*",
                         destination_port_range="22",
                         source_address_prefixes=[
-                            "169.231.0.0/16",  # UCSB Wireless
                             "128.11.0.0/16",  # UCSB Campus(?)
                             "128.111.0.0/16",  # UCSB Servers
+                            "169.231.0.0/16",  # UCSB Wireless
                         ],
                         destination_address_prefix="*"
                     )
