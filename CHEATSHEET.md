@@ -1,17 +1,17 @@
-Run Azure evaluation (local):
+Run Azure evaluation:
 
 ```shell
-parallel --termseq INT,2000 --shuf -j3 ./bfg9000.py cloud az :::: ./cloud_providers/az_images.txt
+parallel --termseq INT,2000 --memfree 30G --shuf -j4 ./bfg9000.py cloud az :::: cloud_providers/az_images_2.txt
 ```
 
-Run Azure evaluation (server):
-
-```shell
-parallel --termseq INT,2000 --memfree 30G --shuf -j8 ./bfg9000.py cloud az :::: ./cloud_providers/az_images.txt
-```
-
-Delete old Azure resources:
+Delete Azure resource groups:
 
 ```shell
 az group list | jq -r '.[] | .name | select(contains("chainreactor"))' | xargs -I {} az group delete --name {} --no-wait --yes
+```
+
+List vulnerable images:
+
+```shell
+sqlite3 stats.sqlite 'select * from runs where state="RunState.SOLUTION_FOUND"'
 ```

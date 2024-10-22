@@ -21,6 +21,14 @@ from .cloud_provider import CloudProviderWrapper
 from .logger import StatDB
 
 
+
+from pathlib import Path
+import json
+import subprocess
+with open(Path(__file__).parent.parent / "cloud_providers" / "az_plans.json") as f:
+    PLANS = json.load(f)
+
+
 class AzureWrapper(CloudProviderWrapper):
     DEFAULT_LOCATION = "westus2"
     DEFAULT_SIZE = "Standard_A1_v2"
@@ -142,35 +150,42 @@ class AzureWrapper(CloudProviderWrapper):
         image_urn = self.image.split(":")
         with open(getenv(self.ENV_PUB_KEY_PATH)) as f:
             pubkey = f.read()
-        self._compute_client.virtual_machines.begin_create_or_update(
-            self._rg.name,
-            self._rg.name,
-            VirtualMachine(
-                location=self.region,
-                storage_profile=StorageProfile(
-                    image_reference=ImageReference(
-                        publisher=image_urn[0],
-                        offer=image_urn[1],
-                        sku=image_urn[2],
-                        version=image_urn[3]
-                    )
-                ),
-                hardware_profile=HardwareProfile(vm_size=VirtualMachineSizeTypes.STANDARD_DS1_V2),
-                os_profile=OSProfile(
-                    computer_name=self._rg.name,
-                    admin_username=self.DEFAULT_USER,
-                    linux_configuration=LinuxConfiguration(
-                        disable_password_authentication=True,
-                        ssh=SshConfiguration(public_keys=[
-                            SshPublicKey(path=f"/home/{self.DEFAULT_USER}/.ssh/authorized_keys", key_data=pubkey)
-                        ])
-                    )
-                ),
-                network_profile=NetworkProfile(network_interfaces=[
-                    NetworkInterfaceReference(id=nic.id)
-                ])
+        subprocess.run(["az", "vm", "image", "terms", "accept", "--urn", self.image])
+        try:
+            self._compute_client.virtual_machines.begin_create_or_update(
+                self._rg.name,
+                self._rg.name,
+                VirtualMachine(
+                    location=self.region,
+                    storage_profile=StorageProfile(
+                        image_reference=ImageReference(
+                            publisher=image_urn[0],
+                            offer=image_urn[1],
+                            sku=image_urn[2],
+                            version=image_urn[3]
+                        )
+                    ),
+                    hardware_profile=HardwareProfile(vm_size=VirtualMachineSizeTypes.STANDARD_DS1_V2),
+                    os_profile=OSProfile(
+                        computer_name=self._rg.name,
+                        admin_username=self.DEFAULT_USER,
+                        linux_configuration=LinuxConfiguration(
+                            disable_password_authentication=True,
+                            ssh=SshConfiguration(public_keys=[
+                                SshPublicKey(path=f"/home/{self.DEFAULT_USER}/.ssh/authorized_keys", key_data=pubkey)
+                            ])
+                        )
+                    ),
+                    network_profile=NetworkProfile(network_interfaces=[
+                        NetworkInterfaceReference(id=nic.id)
+                    ]),
+                    plan=PLANS[self.image]
+                )
             )
-        )
+        except Exception:
+            import sys
+            self._terminate_instance()
+            sys.exit(1)
 
     def _terminate_instance(self):
         if self._rg:
