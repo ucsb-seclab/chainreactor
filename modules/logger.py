@@ -195,7 +195,7 @@ class StatDB:
 
         self.cursor.execute(
             """
-            SELECT id, start_timestamp, end_timestamp, facts_extracted, solution_found FROM runs WHERE ami = ? ORDER BY start_timestamp
+            SELECT id, start_timestamp, end_timestamp, facts_extracted, state FROM runs WHERE ami = ? ORDER BY start_timestamp
             """,
             (self.ami,),
         )

@@ -13,5 +13,7 @@ az group list | jq -r '.[] | .name | select(contains("chainreactor"))' | xargs -
 List vulnerable images:
 
 ```shell
-sqlite3 stats.sqlite 'select * from runs where state="RunState.SOLUTION_FOUND"'
+sqlite3 stats.sqlite "SELECT COUNT(*) FROM runs WHERE state='RunState.SSH_FAILED'"
+sqlite3 stats.sqlite "SELECT COUNT(*) FROM runs WHERE state='RunState.SOLUTION_NOT_FOUND'"
+sqlite3 stats.sqlite "SELECT * FROM runs WHERE state='RunState.SOLUTION_FOUND'"
 ```

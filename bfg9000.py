@@ -219,7 +219,7 @@ def solve_problem(problem: Path, working_directory: Path):
         LOGGER.error("Invalid problem file. Cannot continue solving.")
 
         exit(-1)
-        
+
     if not problem.exists():
         LOGGER.error("Problem not found. Cannot continue solving.")
 
@@ -377,6 +377,7 @@ def add_subparser_solve(subparsers):
         required=True,
     )
 
+
 def add_subparser_cloud(subparsers):
     parser = subparsers.add_parser(
         "cloud",
@@ -504,6 +505,14 @@ def handle_cloud(args):
 
     init_statdb(args)
 
+    states = [x[4] for x in STAT_DB.get_runs(args.image)]
+    if (
+        StatDB.RunState.SOLUTION_FOUND in states
+        or StatDB.RunState.SOLUTION_NOT_FOUND in states
+    ):
+        LOGGER.info("Skipping run as a solution was not found in a previous run")
+        return
+
     if args.script:
         upload_and_run_script(args)
         return
@@ -551,6 +560,7 @@ def main():
         handle_cloud(args)
     elif args.command == "solve":
         solve_problem(Path(args.problem), SCRIPT_DIR)
+
 
 if __name__ == "__main__":
     try:
